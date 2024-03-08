@@ -2,18 +2,18 @@ from __future__ import annotations
 import asyncio
 import logging
 
-from core.config import settings
 from core.loader import bot, dp
 from database.database import async_main, engine
-# from handlers import get_handlers_router
-# from middlewares import register_middlewares
+
+from handlers import get_handlers_router
+from middlewares import register_middlewares
 
 
 async def on_startup() -> None:
     logging.info('Bot starting...')
 
-    # register_middlewares(dp)
-    # dp.include_router(get_handlers_router())
+    register_middlewares(dp)
+    dp.include_router(get_handlers_router())
 
     bot_info = await bot.get_me()
 
@@ -33,7 +33,6 @@ async def on_shutdown() -> None:
     await bot.session.close()
 
     logging.info("Bot stopped 🖥️")
-
 
 
 async def main() -> None:

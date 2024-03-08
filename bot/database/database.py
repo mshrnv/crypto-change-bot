@@ -5,7 +5,7 @@ from uuid import uuid4
 from asyncpg import Connection
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
-from core.config import settings
+from bot.core.config import settings
 from .models import Base
 
 if TYPE_CHECKING:
@@ -35,7 +35,6 @@ def get_sessionmaker(engine: AsyncEngine) -> async_sessionmaker[AsyncSession]:
 async def async_main(engine: AsyncEngine):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-
 
 
 db_url = settings.database_url
