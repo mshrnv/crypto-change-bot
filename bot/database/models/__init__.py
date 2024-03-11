@@ -1,4 +1,5 @@
 from .base import Base
-from .user import UserModel
+from .user import User
+from .transactions import Transaction
 
-__all__ = ["Base", "UserModel"]
+__all__ = ["Base", "User", "Transaction"]

@@ -3,7 +3,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from .base import Base, created_at, int_pk
 
 
-class UserModel(Base):
+class User(Base):
     __tablename__ = "users"
 
     id: Mapped[int_pk]
@@ -11,10 +11,6 @@ class UserModel(Base):
     last_name: Mapped[str | None]
     username: Mapped[str | None]
     language_code: Mapped[str | None]
-    referrer: Mapped[str | None]
     created_at: Mapped[created_at]
-
-    is_admin: Mapped[bool] = mapped_column(default=False)
-    is_suspicious: Mapped[bool] = mapped_column(default=False)
-    is_block: Mapped[bool] = mapped_column(default=False)
-    is_premium: Mapped[bool] = mapped_column(default=False)
+    balance: Mapped[int]
+    is_premium: Mapped[bool]

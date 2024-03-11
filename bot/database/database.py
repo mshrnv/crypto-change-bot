@@ -28,16 +28,15 @@ def get_engine(url: URL | str = settings.database_url) -> AsyncEngine:
     )
 
 
-def get_sessionmaker(engine: AsyncEngine) -> async_sessionmaker[AsyncSession]:
-    return async_sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
+def get_sessionmaker(_engine: AsyncEngine) -> async_sessionmaker[AsyncSession]:
+    return async_sessionmaker(bind=_engine, autoflush=False, expire_on_commit=False)
 
 
-async def async_main(engine: AsyncEngine):
-    async with engine.begin() as conn:
+async def async_main(_engine: AsyncEngine):
+    async with _engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
 
 db_url = settings.database_url
-print(db_url)
 engine = get_engine(url=db_url)
 sessionmaker = get_sessionmaker(engine)
