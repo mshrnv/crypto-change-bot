@@ -41,7 +41,7 @@ async def main() -> None:
     dp.startup.register(on_startup)
     dp.shutdown.register(on_shutdown)
 
-    await async_main(engine=engine)
+    await async_main(_engine=engine)
     await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
 
 

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from sqlalchemy import select
 
-from bot.database.models import UserModel
+from bot.database.models import User
 
 if TYPE_CHECKING:
     from aiogram.types import User
@@ -11,9 +11,8 @@ if TYPE_CHECKING:
 
 
 async def add_user(
-    session: AsyncSession,
-    user: User,
-    referrer: str | None,
+        session: AsyncSession,
+        user: User,
 ) -> None:
     """Add a new user to the database."""
     user_id: int = user.id
@@ -21,16 +20,15 @@ async def add_user(
     last_name: str | None = user.last_name
     username: str | None = user.username
     language_code: str | None = user.language_code
-    is_premium: bool = user.is_premium or False
 
-    new_user = UserModel(
+    new_user = User(
         id=user_id,
         first_name=first_name,
         last_name=last_name,
         username=username,
         language_code=language_code,
-        is_premium=is_premium,
-        referrer=referrer,
+        balance=0,
+        is_premium=False
     )
 
     session.add(new_user)
@@ -39,7 +37,7 @@ async def add_user(
 
 async def user_exists(session: AsyncSession, user_id: int) -> bool:
     """Checks if the user is in the database."""
-    query = select(UserModel.id).filter_by(id=user_id).limit(1)
+    query = select(User.id).filter_by(id=user_id).limit(1)
 
     result = await session.execute(query)
 
