@@ -43,3 +43,14 @@ async def user_exists(session: AsyncSession, user_id: int) -> bool:
 
     user = result.scalar_one_or_none()
     return bool(user)
+
+
+async def get_user_balance(session: AsyncSession, user_id: int) -> int:
+    """Returns user's balance"""
+    query = select(User.balance).filter_by(id=user_id).limit(1)
+
+    result = await session.execute(query)
+
+    balance = result.scalar_one_or_none()
+
+    return balance

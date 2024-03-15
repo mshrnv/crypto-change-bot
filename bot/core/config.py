@@ -45,6 +45,7 @@ class CacheSettings(EnvBaseSettings):
     REDIS_PORT: int = 6379
     REDIS_PASS: str | None = None
     REDIS_DB: int = 0
+
     # REDIS_USERNAME: int | None = None
     # REDIS_TTL_STATE: int | None = None
     # REDIS_TTL_DATA: int | None = None
