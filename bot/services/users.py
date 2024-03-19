@@ -1,9 +1,9 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from sqlalchemy import select
+from sqlalchemy import select, insert, update
 
-from bot.database.models import User
+from bot.database.models import User, Transaction
 
 if TYPE_CHECKING:
     from aiogram.types import User
@@ -54,3 +54,39 @@ async def get_user_balance(session: AsyncSession, user_id: int) -> int:
     balance = result.scalar_one_or_none()
 
     return balance
+
+
+async def deposit(session: AsyncSession, user_id: int, amount: int, wallet: str) -> bool:
+    """Returns user's balance"""
+    query = insert(Transaction).values(
+        user_id=user_id,
+        amount=amount,
+        wallet=wallet,
+        is_deposit=True
+    )
+    result = await session.execute(query)
+
+    query = update(User).where(User.id == user_id).values(balance=User.balance + amount)
+    result = await session.execute(query)
+
+    await session.commit()
+
+    return True
+
+
+async def withdraw(session: AsyncSession, user_id: int, amount: int, wallet: str) -> bool:
+    """Returns user's balance"""
+    query = insert(Transaction).values(
+        user_id=user_id,
+        amount=amount,
+        wallet=wallet,
+        is_deposit=False
+    )
+    result = await session.execute(query)
+
+    query = update(User).where(User.id == user_id).values(balance=User.balance - amount)
+    result = await session.execute(query)
+
+    await session.commit()
+
+    return True

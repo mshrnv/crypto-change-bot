@@ -1,6 +1,8 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+from bot.data.callback import DepositCallbackFactory
+
 
 def main_keyboard() -> InlineKeyboardMarkup:
     """Use in main menu."""
@@ -66,5 +68,18 @@ def settings_keyboard() -> InlineKeyboardMarkup:
 
     keyboard = InlineKeyboardBuilder(markup=buttons)
     keyboard.adjust(1)
+
+    return keyboard.as_markup()
+
+
+def deposit_keyboard(deposit_address) -> InlineKeyboardMarkup:
+    """Support menu"""
+    buttons = [
+        [InlineKeyboardButton(text="Пополнил ✅", callback_data=DepositCallbackFactory(address=deposit_address).pack())],
+        [InlineKeyboardButton(text="Назад", callback_data="menu")],
+    ]
+
+    keyboard = InlineKeyboardBuilder(markup=buttons)
+    keyboard.adjust(1, 1)
 
     return keyboard.as_markup()

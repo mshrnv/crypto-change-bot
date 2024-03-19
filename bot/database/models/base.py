@@ -1,7 +1,7 @@
 import datetime
 from typing import Annotated
 
-from sqlalchemy import text
+from sqlalchemy import text, BigInteger
 from sqlalchemy.orm import DeclarativeBase, mapped_column
 
 int_pk = Annotated[int, mapped_column(primary_key=True, unique=True, autoincrement=False)]

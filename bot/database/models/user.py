@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from sqlalchemy import BigInteger
 from sqlalchemy.orm import Mapped, mapped_column
 from .base import Base, created_at, int_pk
 
@@ -6,7 +8,7 @@ from .base import Base, created_at, int_pk
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[int_pk]
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, unique=True, autoincrement=False)
     first_name: Mapped[str]
     last_name: Mapped[str | None]
     username: Mapped[str | None]
