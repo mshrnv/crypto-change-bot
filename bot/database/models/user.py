@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from sqlalchemy import BigInteger
+from sqlalchemy import BigInteger, Boolean
 from sqlalchemy.orm import Mapped, mapped_column
-from .base import Base, created_at, int_pk
+from .base import Base, created_at
 
 
 class User(Base):
@@ -15,4 +15,5 @@ class User(Base):
     language_code: Mapped[str | None]
     created_at: Mapped[created_at]
     balance: Mapped[int]
+    notifications: Mapped[bool] = mapped_column(Boolean, default=False)
     is_premium: Mapped[bool]
