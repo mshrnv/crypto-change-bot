@@ -17,7 +17,7 @@ class EnvBaseSettings(BaseSettings):
 
 class BotSettings(EnvBaseSettings):
     BOT_TOKEN: str
-    SUPPORT_URL: str | None = None
+    SUPPORT_USERNAME: str | None = None
 
 
 class DBSettings(EnvBaseSettings):
@@ -59,7 +59,7 @@ class CacheSettings(EnvBaseSettings):
 
 class Settings(BotSettings, DBSettings, CacheSettings):
     DEBUG: bool = True
-    DROP_PENDING_UPDATES: bool = False
+    DROP_PENDING_UPDATES: bool = True
 
 
 settings = Settings()
