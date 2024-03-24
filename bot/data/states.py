@@ -2,5 +2,6 @@ from aiogram.fsm.state import StatesGroup, State
 
 
 class WithdrawOrder(StatesGroup):
-    balance = State()
-    choosing_amount = State()
+    to_wallet_address = State()
+    amount = State()
+    approve = State()
