@@ -1,8 +1,10 @@
+"""Init handlers module"""
 from aiogram import Router
 from . import start, profile, settings, wallets
 
 
 def get_handlers_router() -> Router:
+    """Main router"""
     router = Router()
 
     router.include_router(start.router)

@@ -1,3 +1,4 @@
+"""Main module"""
 from __future__ import annotations
 import asyncio
 import logging
@@ -10,6 +11,7 @@ from middlewares import register_middlewares
 
 
 async def on_startup() -> None:
+    """On bot start actions"""
     logging.info('Bot starting...')
 
     register_middlewares(dp)
@@ -25,6 +27,7 @@ async def on_startup() -> None:
 
 
 async def on_shutdown() -> None:
+    """On bot shutdown actions"""
     logging.info("Bot stopping...")
 
     await dp.storage.close()
@@ -36,6 +39,7 @@ async def on_shutdown() -> None:
 
 
 async def main() -> None:
+    """Start bot"""
     logging.basicConfig(level=logging.INFO)
 
     dp.startup.register(on_startup)

@@ -1,3 +1,4 @@
+"""Init module of models"""
 from .base import Base
 from .user import User
 from .transactions import Transaction

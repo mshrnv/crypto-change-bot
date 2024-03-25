@@ -1,3 +1,4 @@
+"""Config file"""
 from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -12,15 +13,18 @@ BOT_DIR = Path(__file__).absolute().parent.parent
 
 
 class EnvBaseSettings(BaseSettings):
+    """Base settings class"""
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
 
 class BotSettings(EnvBaseSettings):
+    """Bot common settings"""
     BOT_TOKEN: str
     SUPPORT_USERNAME: str | None = None
 
 
 class DBSettings(EnvBaseSettings):
+    """Database settings"""
     POSTGRES_HOST: str = "postgres"
     POSTGRES_PORT: int = 5432
     POSTGRES_USER: str = "postgres"
@@ -29,18 +33,21 @@ class DBSettings(EnvBaseSettings):
 
     @property
     def database_url(self) -> URL | str:
+        """Asyncpg postgres URL"""
         if self.POSTGRES_PASSWORD:
             return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
         return f"postgresql+asyncpg://{self.POSTGRES_USER}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
     @property
     def database_url_psycopg2(self) -> str:
+        """Psycopg postgres URL"""
         if self.POSTGRES_PASSWORD:
             return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
         return f"postgresql://{self.POSTGRES_USER}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
 
 class CacheSettings(EnvBaseSettings):
+    """Redis settings"""
     REDIS_HOST: str = "redis"
     REDIS_PORT: int = 6379
     REDIS_PASS: str | None = None
@@ -52,12 +59,14 @@ class CacheSettings(EnvBaseSettings):
 
     @property
     def redis_url(self) -> str:
+        """Redis URL"""
         if self.REDIS_PASS:
             return f"redis://{self.REDIS_PASS}@{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
         return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
 
 
 class Settings(BotSettings, DBSettings, CacheSettings):
+    """All settings"""
     DEBUG: bool = True
     DROP_PENDING_UPDATES: bool = True
 

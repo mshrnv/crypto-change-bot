@@ -1,3 +1,4 @@
+"""Inline keyboards"""
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
@@ -6,7 +7,7 @@ from bot.data.callback import DepositWalletCallbackFactory, WithdrawWalletCallba
 
 
 def main_keyboard() -> InlineKeyboardMarkup:
-    """Use in main menu."""
+    """Main menu"""
     buttons = [
         [InlineKeyboardButton(text="Профиль 👤", callback_data="profile")],
         [InlineKeyboardButton(text="Мои кошельки 💳", callback_data="wallets")],
@@ -21,7 +22,7 @@ def main_keyboard() -> InlineKeyboardMarkup:
 
 
 def new_menu_keyboard() -> InlineKeyboardMarkup:
-    """New menu."""
+    """New menu message keyboard"""
     buttons = [
         [InlineKeyboardButton(text="Меню 📓", callback_data="new_menu")],
     ]
@@ -31,8 +32,9 @@ def new_menu_keyboard() -> InlineKeyboardMarkup:
 
     return keyboard.as_markup()
 
+
 def profile_keyboard() -> InlineKeyboardMarkup:
-    """Use in profile menu."""
+    """Profile keyboard"""
     buttons = [
         [InlineKeyboardButton(text="Мои кошельки 💳", callback_data="wallets")],
         [InlineKeyboardButton(text="Назад", callback_data="menu")],
@@ -45,7 +47,7 @@ def profile_keyboard() -> InlineKeyboardMarkup:
 
 
 def wallets_keyboard() -> InlineKeyboardMarkup:
-    """Use in wallets menu."""
+    """Wallets categories keyboard"""
     buttons = [
         [InlineKeyboardButton(text="Торговый счет 📈", callback_data="trading_wallet")],
         [InlineKeyboardButton(text="На депозит 📥", callback_data="deposit_wallets")],
@@ -60,7 +62,7 @@ def wallets_keyboard() -> InlineKeyboardMarkup:
 
 
 def deposit_wallets_keyboard(wallets) -> InlineKeyboardMarkup:
-    """Deposit wallets"""
+    """Deposit wallets list keyboard"""
     buttons = []
 
     for wallet in wallets:
@@ -82,7 +84,7 @@ def deposit_wallets_keyboard(wallets) -> InlineKeyboardMarkup:
 
 
 def withdraw_wallets_keyboard(wallets) -> InlineKeyboardMarkup:
-    """Withdraw wallets"""
+    """Withdraw wallets list keyboards"""
     buttons = []
 
     for wallet in wallets:
@@ -104,7 +106,7 @@ def withdraw_wallets_keyboard(wallets) -> InlineKeyboardMarkup:
 
 
 def back_to_deposit_wallets_keyboard() -> InlineKeyboardMarkup:
-    """Back to Deposit wallets"""
+    """Back to deposit wallets list keyboard"""
     buttons = [
         [InlineKeyboardButton(text="Назад", callback_data="deposit_wallets")],
     ]
@@ -116,7 +118,7 @@ def back_to_deposit_wallets_keyboard() -> InlineKeyboardMarkup:
 
 
 def back_to_withdraw_wallets_keyboard() -> InlineKeyboardMarkup:
-    """Back to Withdraw wallets"""
+    """Back to withdraw wallets list keyboard"""
     buttons = [
         [InlineKeyboardButton(text="Назад", callback_data="withdraw_wallets")],
     ]
@@ -128,7 +130,7 @@ def back_to_withdraw_wallets_keyboard() -> InlineKeyboardMarkup:
 
 
 def current_deposit_wallet_keyboard(wallet_id) -> InlineKeyboardMarkup:
-    """Current Deposit wallets"""
+    """Current deposit wallet keyboard"""
     # TODO: Send to trading wallet
     # TODO: Update balance
     buttons = [
@@ -146,7 +148,7 @@ def current_deposit_wallet_keyboard(wallet_id) -> InlineKeyboardMarkup:
 
 
 def current_withdraw_wallet_keyboard(wallet_id) -> InlineKeyboardMarkup:
-    """Current Deposit wallets"""
+    """Current withdraw wallet keyboard"""
     # TODO: Update balance
     buttons = [
         [InlineKeyboardButton(text="Вывести на внешний кошелек 💸",
@@ -164,7 +166,7 @@ def current_withdraw_wallet_keyboard(wallet_id) -> InlineKeyboardMarkup:
 
 
 def trading_wallet_keyboard() -> InlineKeyboardMarkup:
-    """Trading wallet kb"""
+    """Trading wallet keyboard"""
     buttons = [
         [InlineKeyboardButton(text="История сделок на торговом счете 📖", callback_data="trading_history")],
         [InlineKeyboardButton(text="Назад", callback_data="wallets")],
@@ -177,7 +179,7 @@ def trading_wallet_keyboard() -> InlineKeyboardMarkup:
 
 
 def trading_history_keyboard() -> InlineKeyboardMarkup:
-    """Trading wallet kb"""
+    """Trading history keyboard"""
     buttons = [
         [InlineKeyboardButton(text="Назад", callback_data="trading_wallet")],
     ]
@@ -189,7 +191,7 @@ def trading_history_keyboard() -> InlineKeyboardMarkup:
 
 
 def approve_withdraw_keyboard() -> InlineKeyboardMarkup:
-    """approve withdraw kb"""
+    """Approve withdraw keyboard"""
     buttons = [
         [InlineKeyboardButton(text="Подтверждаю ✅", callback_data="approve_withdraw")],
         [InlineKeyboardButton(text="Отмена ❌", callback_data="dont_approve_withdraw")],
@@ -202,7 +204,7 @@ def approve_withdraw_keyboard() -> InlineKeyboardMarkup:
 
 
 def support_keyboard() -> InlineKeyboardMarkup:
-    """Support menu"""
+    """Support menu keyboard"""
     buttons = [
         [InlineKeyboardButton(text="Написать в поддержку 📝", callback_data="write_to_support")],
         [InlineKeyboardButton(text="Назад", callback_data="menu")],
@@ -215,7 +217,7 @@ def support_keyboard() -> InlineKeyboardMarkup:
 
 
 def write_to_support_keyboard() -> InlineKeyboardMarkup:
-    """Write Support menu"""
+    """Write to support keyboard"""
     buttons = [
         [InlineKeyboardButton(text="Назад", callback_data="support")],
     ]
@@ -227,7 +229,7 @@ def write_to_support_keyboard() -> InlineKeyboardMarkup:
 
 
 def settings_keyboard(notifications_status) -> InlineKeyboardMarkup:
-    """Settings menu"""
+    """Settings menu keyboard"""
 
     notifications_button_text = "Уведомления: включены ✅" if notifications_status else "Уведомления: выключены ❌"
 

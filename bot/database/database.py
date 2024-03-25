@@ -1,3 +1,4 @@
+"""Database"""
 from __future__ import annotations
 from typing import TYPE_CHECKING
 from uuid import uuid4
@@ -13,11 +14,14 @@ if TYPE_CHECKING:
 
 
 class CConnection(Connection):
+    """Connection class"""
+
     def _get_unique_id(self, prefix: str) -> str:
         return f"__asyncpg_{prefix}_{uuid4()}__"
 
 
 def get_engine(url: URL | str = settings.database_url) -> AsyncEngine:
+    """Returns database engine instance"""
     return create_async_engine(
         url=url,
         echo=settings.DEBUG,
@@ -29,10 +33,12 @@ def get_engine(url: URL | str = settings.database_url) -> AsyncEngine:
 
 
 def get_sessionmaker(_engine: AsyncEngine) -> async_sessionmaker[AsyncSession]:
+    """Returns sessionmaker instance"""
     return async_sessionmaker(bind=_engine, autoflush=False, expire_on_commit=False)
 
 
 async def async_main(_engine: AsyncEngine):
+    """Syncing database state"""
     async with _engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 

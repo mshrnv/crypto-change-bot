@@ -1,3 +1,4 @@
+"""User model"""
 from __future__ import annotations
 
 from sqlalchemy import BigInteger, Boolean
@@ -6,6 +7,7 @@ from .base import Base, created_at
 
 
 class User(Base):
+    """User model class"""
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, unique=True, autoincrement=False)

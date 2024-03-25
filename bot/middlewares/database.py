@@ -1,3 +1,4 @@
+"""Database middleware"""
 from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
@@ -12,6 +13,8 @@ if TYPE_CHECKING:
 
 
 class DatabaseMiddleware(BaseMiddleware):
+    """Database middleware class"""
+
     async def __call__(
             self,
             handler: Callable[[Update, dict[str, Any]], Awaitable[Any]],

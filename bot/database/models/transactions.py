@@ -1,5 +1,5 @@
+"""Transaction model"""
 from __future__ import annotations
-
 from typing import Annotated
 
 from sqlalchemy import ForeignKey
@@ -12,6 +12,7 @@ user_id_fk = Annotated[int, mapped_column(ForeignKey('users.id'))]
 
 
 class Transaction(Base):
+    """Transaction model class"""
     __tablename__ = "transactions"
 
     id: Mapped[int_pk]

@@ -1,13 +1,11 @@
+"""Wallets service"""
 from __future__ import annotations
-from typing import TYPE_CHECKING, List, Any
+from typing import List, Any
 
-from sqlalchemy import select, insert, update
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, update
 
 from bot.database.models import Wallet, User
-
-if TYPE_CHECKING:
-    from aiogram.types import User
-    from sqlalchemy.ext.asyncio import AsyncSession
 
 
 async def add_wallet(
@@ -36,6 +34,7 @@ async def get_user_wallets(
         user_id: int,
         is_deposit: bool
 ) -> List[Any]:
+    """Returns user wallets list"""
     query = select(Wallet).filter_by(user_id=user_id, is_deposit=is_deposit, is_deleted=False)
     result = await session.execute(query)
 
@@ -47,6 +46,7 @@ async def get_wallet_info(
         session: AsyncSession,
         wallet_id: int,
 ) -> List[Any]:
+    """Returns wallet info"""
     query = select(Wallet).filter_by(id=wallet_id).limit(1)
     result = await session.execute(query)
 
@@ -58,6 +58,7 @@ async def delete_wallet(
         session: AsyncSession,
         wallet_id: int
 ) -> bool:
+    """Deletes wallet"""
     query = update(Wallet).where(Wallet.id == wallet_id).values(is_deleted=True)
     await session.execute(query)
     await session.commit()
@@ -69,6 +70,7 @@ async def get_trading_wallet_balance(
         session: AsyncSession,
         user_id: int
 ) -> int:
+    """Returns trading wallet balance"""
     query = select(User.balance).filter_by(id=user_id).limit(1)
     result = await session.execute(query)
 

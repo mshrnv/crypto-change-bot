@@ -1,7 +1,8 @@
+"""Base model"""
 import datetime
 from typing import Annotated
 
-from sqlalchemy import text, BigInteger
+from sqlalchemy import text
 from sqlalchemy.orm import DeclarativeBase, mapped_column
 
 int_pk = Annotated[int, mapped_column(primary_key=True, unique=True, autoincrement=False)]
@@ -9,6 +10,7 @@ created_at = Annotated[datetime.datetime, mapped_column(server_default=text("TIM
 
 
 class Base(DeclarativeBase):
+    """Base model class"""
     repr_cols_num: int = 3  # print first columns
     repr_cols: tuple = ()  # extra printed columns
 

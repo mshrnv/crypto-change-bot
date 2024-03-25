@@ -1,3 +1,5 @@
+"""Static messages"""
+
 START_MESSAGE = "Привет 👋"
 
 MENU_MESSAGE = "Главное меню"

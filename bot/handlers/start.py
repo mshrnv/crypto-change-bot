@@ -1,3 +1,4 @@
+"""Base handler"""
 from aiogram import Router, types, F
 from aiogram.filters import CommandStart, Command
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -27,7 +28,7 @@ async def menu_handler(message: types.Message):
 
 
 @router.callback_query(F.data == "menu")
-async def menu_handler(callback: types.CallbackQuery):
+async def edit_menu_handler(callback: types.CallbackQuery):
     """Menu message"""
     await callback.message.edit_text(MENU_MESSAGE, reply_markup=main_keyboard())
     await callback.answer()

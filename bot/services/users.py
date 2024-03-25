@@ -1,21 +1,19 @@
+"""Users service"""
 from __future__ import annotations
-from typing import TYPE_CHECKING, Any, Dict
+from typing import Any, Dict
 
-from sqlalchemy import select, insert, update
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, update
 from sqlalchemy.sql import func
 
-from bot.database.models import User, Transaction, Wallet
-
-if TYPE_CHECKING:
-    from aiogram.types import User
-    from sqlalchemy.ext.asyncio import AsyncSession
+from bot.database.models import User, Wallet
 
 
 async def add_user(
         session: AsyncSession,
         user: User,
 ) -> None:
-    """Add a new user to the database."""
+    """Add a new user to the database"""
     user_id: int = user.id
     first_name: str = user.first_name
     last_name: str | None = user.last_name
@@ -37,7 +35,7 @@ async def add_user(
 
 
 async def user_exists(session: AsyncSession, user_id: int) -> bool:
-    """Checks if the user is in the database."""
+    """Checks if the user exists"""
     query = select(User.id).filter_by(id=user_id).limit(1)
 
     result = await session.execute(query)
@@ -48,6 +46,8 @@ async def user_exists(session: AsyncSession, user_id: int) -> bool:
 
 async def get_user_balances(session: AsyncSession, user_id: int) -> Dict[Any]:
     """Returns user's balances"""
+
+    # TODO: Make actual balances (using API)
 
     balances = {
         'trading_balance': 0,
@@ -77,42 +77,6 @@ async def get_user_balances(session: AsyncSession, user_id: int) -> Dict[Any]:
     return balances
 
 
-async def deposit(session: AsyncSession, user_id: int, amount: int, wallet: str) -> bool:
-    """Returns user's balance"""
-    query = insert(Transaction).values(
-        user_id=user_id,
-        amount=amount,
-        wallet=wallet,
-        is_deposit=True
-    )
-    result = await session.execute(query)
-
-    query = update(User).where(User.id == user_id).values(balance=User.balance + amount)
-    result = await session.execute(query)
-
-    await session.commit()
-
-    return True
-
-
-async def withdraw(session: AsyncSession, user_id: int, amount: int, wallet: str) -> bool:
-    """Returns user's balance"""
-    query = insert(Transaction).values(
-        user_id=user_id,
-        amount=amount,
-        wallet=wallet,
-        is_deposit=False
-    )
-    result = await session.execute(query)
-
-    query = update(User).where(User.id == user_id).values(balance=User.balance - amount)
-    result = await session.execute(query)
-
-    await session.commit()
-
-    return True
-
-
 async def change_notifications_status(session: AsyncSession, user_id: int) -> bool:
     """Changes user's notifications status"""
 
@@ -128,7 +92,7 @@ async def change_notifications_status(session: AsyncSession, user_id: int) -> bo
 
 
 async def get_notifications_status(session: AsyncSession, user_id: int) -> bool:
-    """Changes user's notifications status"""
+    """Get user's notifications status"""
     query = select(User.notifications).filter_by(id=user_id).limit(1)
     result = await session.execute(query)
     notifications_status = result.scalar_one_or_none()

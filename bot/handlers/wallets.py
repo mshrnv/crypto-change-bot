@@ -1,3 +1,4 @@
+"""Wallets operations handlers"""
 from aiogram import Router, types
 from aiogram import F
 from aiogram import html
@@ -23,7 +24,7 @@ router = Router(name="wallets")
 
 @router.callback_query(F.data == "wallets")
 async def wallets_handler(callback: types.CallbackQuery) -> None:
-    """Wallets"""
+    """Wallets categories"""
     await callback.message.edit_text(
         text="Выберите категорию",
         reply_markup=wallets_keyboard()
@@ -33,7 +34,7 @@ async def wallets_handler(callback: types.CallbackQuery) -> None:
 
 @router.callback_query(F.data == "deposit_wallets")
 async def deposit_wallets_handler(callback: types.CallbackQuery, session: AsyncSession) -> None:
-    """Deposit wallets"""
+    """Deposit wallets list"""
     wallets = await get_user_wallets(session=session, user_id=callback.from_user.id, is_deposit=True)
     await callback.message.edit_text(
         text="Список кошельков для пополнения",
@@ -44,7 +45,7 @@ async def deposit_wallets_handler(callback: types.CallbackQuery, session: AsyncS
 
 @router.callback_query(F.data == "withdraw_wallets")
 async def withdraw_wallets_handler(callback: types.CallbackQuery, session: AsyncSession) -> None:
-    """Withdraw wallets"""
+    """Withdraw wallets list"""
     wallets = await get_user_wallets(session=session, user_id=callback.from_user.id, is_deposit=False)
     await callback.message.edit_text(
         text="Список кошельков для вывода",
@@ -55,7 +56,7 @@ async def withdraw_wallets_handler(callback: types.CallbackQuery, session: Async
 
 @router.callback_query(F.data == "new_deposit_wallet")
 async def new_deposit_wallet_handler(callback: types.CallbackQuery, session: AsyncSession) -> None:
-    """New Deposit wallet"""
+    """Create new deposit wallet"""
     wallet = create_wallet()
     await add_wallet(session, callback.from_user.id, True, wallet)
     # TODO: Add wallet info into message
@@ -68,7 +69,7 @@ async def new_deposit_wallet_handler(callback: types.CallbackQuery, session: Asy
 
 @router.callback_query(F.data == "new_withdraw_wallet")
 async def new_withdraw_wallet_handler(callback: types.CallbackQuery, session: AsyncSession) -> None:
-    """New Withdraw wallet"""
+    """Create new withdraw wallet"""
     wallet = create_wallet()
     await add_wallet(session, callback.from_user.id, False, wallet)
     # TODO: Add wallet info into message
@@ -85,6 +86,7 @@ async def deposit_wallet_info(
         callback_data: DepositWalletCallbackFactory,
         session: AsyncSession
 ):
+    """Deposit wallet info"""
     wallet_info = await get_wallet_info(session=session, wallet_id=callback_data.wallet_id)
     wallet_usdt_balance = await get_wallet_usdt_balance(wallet_info.base58_address)
 
@@ -101,6 +103,7 @@ async def withdraw_wallet_info(
         callback_data: WithdrawWalletCallbackFactory,
         session: AsyncSession
 ):
+    """Withdraw wallet info"""
     wallet_info = await get_wallet_info(session=session, wallet_id=callback_data.wallet_id)
     wallet_usdt_balance = await get_wallet_usdt_balance(wallet_info.base58_address)
 
@@ -117,6 +120,7 @@ async def delete_deposit_wallet(
         callback_data: DeleteDepositWalletCallbackFactory,
         session: AsyncSession
 ):
+    """Delete deposit wallet info"""
     await delete_wallet(session, callback_data.wallet_id)
     # TODO: Add wallet address to CallbackFactory
     await callback.message.edit_text(
@@ -132,6 +136,7 @@ async def delete_withdraw_wallet(
         callback_data: DeleteDepositWalletCallbackFactory,
         session: AsyncSession
 ):
+    """Delete withdraw wallet info"""
     await delete_wallet(session, callback_data.wallet_id)
     # TODO: Add wallet address to CallbackFactory
     await callback.message.edit_text(
@@ -143,7 +148,7 @@ async def delete_withdraw_wallet(
 
 @router.callback_query(F.data == "trading_wallet")
 async def trading_wallet_handler(callback: types.CallbackQuery, session: AsyncSession) -> None:
-    """Trading wallet"""
+    """Trading wallet info"""
     trading_balance = await get_trading_wallet_balance(session, callback.from_user.id)
     await callback.message.edit_text(
         text=f"<b>Информация о торговом счете</b> 📈\n\n<b>Баланс</b>: {trading_balance} USDT",
@@ -171,17 +176,16 @@ async def trading_history_handler(callback: types.CallbackQuery, session: AsyncS
 
 
 @router.callback_query(WithdrawCallbackFactory.filter())
-async def address_withdraw_wallet(
+async def init_withdraw(
         callback: types.CallbackQuery,
         callback_data: WithdrawCallbackFactory,
         session: AsyncSession,
         state: FSMContext
 ):
+    """Initialization of withdraw process"""
     await callback.message.edit_text(
         text="Введите адрес кошелька на который необходимо вывести активы",
     )
-
-    # TODO: FRom wallet id from callback factory
 
     from_wallet = await get_wallet_info(session, callback_data.wallet_id)
     await state.update_data(from_wallet=from_wallet)
@@ -190,7 +194,9 @@ async def address_withdraw_wallet(
 
 
 @router.message(WithdrawOrder.to_wallet_address)
-async def to_address_withdraw_wallet(message: types.Message, state: FSMContext):
+async def to_address_withdraw(message: types.Message, state: FSMContext):
+    """Entering address to withdraw"""
+
     if check_address(message.text):
         await state.update_data(to_address=message.text)
         user_data = await state.get_data()
@@ -208,9 +214,10 @@ async def to_address_withdraw_wallet(message: types.Message, state: FSMContext):
 
 @router.message(WithdrawOrder.amount)
 async def amount_withdraw_wallet(message: types.Message, state: FSMContext):
+    """Entering withdraw amount"""
     try:
         amount = float(message.text)
-        # TODO: Check balance!
+        # TODO: Check balance !!!
         await state.update_data(amount=amount)
 
         user_data = await state.get_data()
@@ -226,12 +233,15 @@ async def amount_withdraw_wallet(message: types.Message, state: FSMContext):
             text="Неверно введена сумма для перевода, попробуйте еще раз 🔄"
         )
 
+
 @router.callback_query(F.data == "approve_withdraw", WithdrawOrder.approve)
-async def amount_withdraw_wallet(callback: types.CallbackQuery, state: FSMContext):
+async def approving_withdraw(callback: types.CallbackQuery, state: FSMContext):
+    """Approving withdraw transaction"""
     user_data = await state.get_data()
 
     # TODO: Save to DB
-    result = await transfer_usdt(user_data.get('from_wallet').base58_address, user_data.get('to_address'), user_data.get('amount'), user_data.get('from_wallet').private_key)
+    result = await transfer_usdt(user_data.get('from_wallet').base58_address, user_data.get('to_address'),
+                                 user_data.get('amount'), user_data.get('from_wallet').private_key)
 
     status = 'Успешно 🎉' if result['result'] else 'Неуспешно 😬'
     trx_id = result.get('txid') if result.get('txid') else 'Ошибка'
@@ -246,17 +256,11 @@ async def amount_withdraw_wallet(callback: types.CallbackQuery, state: FSMContex
 
 
 @router.callback_query(F.data == "dont_approve_withdraw", WithdrawOrder.approve)
-async def amount_withdraw_wallet(callback: types.CallbackQuery, state: FSMContext):
+async def canceling_withdraw(callback: types.CallbackQuery, state: FSMContext):
+    """Canceling withdraw transaction"""
     await callback.message.answer(
         text="Транзакция отменена ❌",
         reply_markup=new_menu_keyboard()
     )
     await state.clear()
-    await callback.answer()
-
-@router.callback_query(F.data == "update")
-async def update_balance_handler(callback: types.CallbackQuery, session: AsyncSession) -> None:
-    """Update balance"""
-
-    await get_wallet_balance("TCSgVAtVAHaUZyeL4vCvpV6fYnSiVTTw9U")
     await callback.answer()

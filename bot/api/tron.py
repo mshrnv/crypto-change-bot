@@ -1,3 +1,4 @@
+"""API to interact with TRON blockchain"""
 import aiohttp
 from tronpy import AsyncTron
 from tronpy.keys import PrivateKey
@@ -5,6 +6,7 @@ from tronpy.keys import PrivateKey
 
 # TODO: To delete?
 async def transfer_trx(_from, _to, _amount, _private_key):
+    """Transferring TRX from wallet to another wallet"""
     async with AsyncTron(network='nile') as client:
         txb = (
             client.trx.transfer(_from, _to, 1_000)
@@ -20,6 +22,7 @@ async def transfer_trx(_from, _to, _amount, _private_key):
 
 
 async def transfer_usdt(_from, _to, _amount, _private_key):
+    """Transferring USDT from wallet to another wallet"""
     # TODO: TESTNET
     async with (AsyncTron(network='nile') as client):
         private_key = PrivateKey(bytes.fromhex(_private_key))
@@ -39,6 +42,7 @@ async def transfer_usdt(_from, _to, _amount, _private_key):
 
 
 async def get_wallet_usdt_balance(address):
+    """Returns wallet USDT(TRC20) balance"""
     # TODO: TESTNET
     usdt_contract_address = "TXLAQ63Xg1NAzckPwKHvzw7CSEmLMEqcdj"
 
