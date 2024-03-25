@@ -4,7 +4,7 @@ from aiogram import html
 from aiogram.fsm.context import FSMContext
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bot.api.tron import transfer_usdt
+from bot.api.tron import transfer_usdt, get_wallet_usdt_balance
 from bot.data.callback import DeleteDepositWalletCallbackFactory, \
     DeleteWithdrawWalletCallbackFactory, DepositWalletCallbackFactory, WithdrawWalletCallbackFactory, \
     WithdrawCallbackFactory
@@ -86,8 +86,10 @@ async def deposit_wallet_info(
         session: AsyncSession
 ):
     wallet_info = await get_wallet_info(session=session, wallet_id=callback_data.wallet_id)
+    wallet_usdt_balance = await get_wallet_usdt_balance(wallet_info.base58_address)
+
     await callback.message.edit_text(
-        text=f"<b>Информация о кошельке:</b>\n\nHexAddress: {html.pre(wallet_info.hex_address)}\n\nBase58Address: {html.pre(wallet_info.base58_address)}\n\n<b>Баланс</b>: {wallet_info.balance} USDT",
+        text=f"<b>Информация о кошельке:</b>\n\nАдрес: {html.pre(wallet_info.base58_address)}\n\n<b>Баланс</b>: {wallet_usdt_balance} USDT",
         reply_markup=current_deposit_wallet_keyboard(wallet_info.id)
     )
     await callback.answer()
@@ -100,8 +102,10 @@ async def withdraw_wallet_info(
         session: AsyncSession
 ):
     wallet_info = await get_wallet_info(session=session, wallet_id=callback_data.wallet_id)
+    wallet_usdt_balance = await get_wallet_usdt_balance(wallet_info.base58_address)
+
     await callback.message.edit_text(
-        text=f"<b>Информация о кошельке:</b>\n\nHexAddress: {html.pre(wallet_info.hex_address)}\n\nBase58Address: {html.pre(wallet_info.base58_address)}\n\n<b>Баланс</b>: {wallet_info.balance} USDT",
+        text=f"<b>Информация о кошельке:</b>\n\nАдрес: {html.pre(wallet_info.base58_address)}\n\n<b>Баланс</b>: {wallet_usdt_balance} USDT",
         reply_markup=current_withdraw_wallet_keyboard(wallet_info.id)
     )
     await callback.answer()
@@ -174,7 +178,7 @@ async def address_withdraw_wallet(
         state: FSMContext
 ):
     await callback.message.edit_text(
-        text="Введите адрес кошелька на который необходимо вывести активы 💸",
+        text="Введите адрес кошелька на который необходимо вывести активы",
     )
 
     # TODO: FRom wallet id from callback factory
@@ -189,8 +193,11 @@ async def address_withdraw_wallet(
 async def to_address_withdraw_wallet(message: types.Message, state: FSMContext):
     if check_address(message.text):
         await state.update_data(to_address=message.text)
+        user_data = await state.get_data()
+        wallet_usdt_balance = await get_wallet_usdt_balance(user_data.get('from_wallet').base58_address)
+
         await message.answer(
-            text="Укажите сумму перевода в USDT 💵",
+            text=f"Баланс кошелька: {wallet_usdt_balance} USDT\n\nУкажите сумму перевода в USDT 💵",
         )
         await state.set_state(WithdrawOrder.amount)
     else:
@@ -247,16 +254,9 @@ async def amount_withdraw_wallet(callback: types.CallbackQuery, state: FSMContex
     await state.clear()
     await callback.answer()
 
-# @router.callback_query(F.data == "withdraw")
-# async def withdraw_handler(callback: types.CallbackQuery, session: AsyncSession) -> None:
-#     """Withdraw"""
-#
-#     wallet = await get_wallet_info(session, 1)
-#     wallet2 = await get_wallet_info(session, 2)
-#
-#     result = await transfer_usdt(wallet.base58_address, wallet2.base58_address, 100, wallet.private_key)
-#
-#     await callback.message.edit_text(
-#         text=f"{result}",
-#     )
-#     await callback.answer()
+@router.callback_query(F.data == "update")
+async def update_balance_handler(callback: types.CallbackQuery, session: AsyncSession) -> None:
+    """Update balance"""
+
+    await get_wallet_balance("TCSgVAtVAHaUZyeL4vCvpV6fYnSiVTTw9U")
+    await callback.answer()

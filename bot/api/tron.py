@@ -38,14 +38,20 @@ async def transfer_usdt(_from, _to, _amount, _private_key):
         return tx
 
 
-async def get_wallet_balance(address):
+async def get_wallet_usdt_balance(address):
+    # TODO: TESTNET
     usdt_contract_address = "TXLAQ63Xg1NAzckPwKHvzw7CSEmLMEqcdj"
 
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(verify_ssl=False)) as session:
         url = f"https://nile.trongrid.io/v1/accounts/{address}"
         async with session.get(url) as resp:
             data = await resp.json()
-            trc20 = data.get('data')[0].get('trc20')
+            trc20 = data.get('data')
+
+            if not trc20:
+                return 0
+
+            trc20 = trc20[0].get('trc20')
 
             for token in trc20:
                 for contract, balance in token.items():
