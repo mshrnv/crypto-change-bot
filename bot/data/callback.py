@@ -2,22 +2,22 @@
 from aiogram.filters.callback_data import CallbackData
 
 
-class DepositWalletCallbackFactory(CallbackData, prefix="depo_wall"):
+class DepositWalletCallbackFactory(CallbackData, prefix="dpst_wall"):
     """Deposit wallet callback factory"""
     wallet_id: int
 
 
-class WithdrawWalletCallbackFactory(CallbackData, prefix="withdraw_wall"):
+class WithdrawWalletCallbackFactory(CallbackData, prefix="wthdrw_wall"):
     """Withdraw wallet callback factory"""
     wallet_id: int
 
 
-class DeleteDepositWalletCallbackFactory(CallbackData, prefix="delete_depo_wall"):
+class DeleteDepositWalletCallbackFactory(CallbackData, prefix="delete_dpst_wall"):
     """Delete deposit wallet callback factory"""
     wallet_id: int
 
 
-class DeleteWithdrawWalletCallbackFactory(CallbackData, prefix="delete_with_draw_wall"):
+class DeleteWithdrawWalletCallbackFactory(CallbackData, prefix="delete_wthdrw_wall"):
     """Delete withdraw wallet callback factory"""
     wallet_id: int
 

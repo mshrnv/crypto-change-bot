@@ -17,6 +17,7 @@ from bot.keyboards.inline import back_to_deposit_wallets_keyboard, \
     trading_history_keyboard, approve_withdraw_keyboard, new_menu_keyboard
 from bot.services.wallets import get_user_wallets, get_wallet_info, delete_wallet, add_wallet, \
     get_trading_wallet_balance
+from bot.services.withdraws import add_withdraw_transaction
 from bot.utils.crypto import create_wallet, check_address
 
 router = Router(name="wallets")
@@ -58,10 +59,10 @@ async def withdraw_wallets_handler(callback: types.CallbackQuery, session: Async
 async def new_deposit_wallet_handler(callback: types.CallbackQuery, session: AsyncSession) -> None:
     """Create new deposit wallet"""
     wallet = create_wallet()
-    await add_wallet(session, callback.from_user.id, True, wallet)
-    # TODO: Add wallet info into message
+    result = await add_wallet(session, callback.from_user.id, True, wallet)
+
     await callback.message.edit_text(
-        text="Кошелек успешно добавлен",
+        text=f"<b>Кошелек успешно добавлен</b> 🎯\n\nID: {result.id}\n\nАдрес:\n{html.pre(result.base58_address)}",
         reply_markup=back_to_deposit_wallets_keyboard()
     )
     await callback.answer()
@@ -71,10 +72,10 @@ async def new_deposit_wallet_handler(callback: types.CallbackQuery, session: Asy
 async def new_withdraw_wallet_handler(callback: types.CallbackQuery, session: AsyncSession) -> None:
     """Create new withdraw wallet"""
     wallet = create_wallet()
-    await add_wallet(session, callback.from_user.id, False, wallet)
-    # TODO: Add wallet info into message
+    result = await add_wallet(session, callback.from_user.id, False, wallet)
+
     await callback.message.edit_text(
-        text="Кошелек успешно добавлен",
+        text=f"<b>Кошелек успешно добавлен</b> 🎯\n\nID: {result.id}\n\nАдрес:\n{html.pre(result.base58_address)}",
         reply_markup=back_to_withdraw_wallets_keyboard()
     )
     await callback.answer()
@@ -122,9 +123,8 @@ async def delete_deposit_wallet(
 ):
     """Delete deposit wallet info"""
     await delete_wallet(session, callback_data.wallet_id)
-    # TODO: Add wallet address to CallbackFactory
     await callback.message.edit_text(
-        text="Кошелек успешно удален",
+        text="Кошелек успешно удален 🔪",
         reply_markup=back_to_deposit_wallets_keyboard()
     )
     await callback.answer()
@@ -138,9 +138,8 @@ async def delete_withdraw_wallet(
 ):
     """Delete withdraw wallet info"""
     await delete_wallet(session, callback_data.wallet_id)
-    # TODO: Add wallet address to CallbackFactory
     await callback.message.edit_text(
-        text="Кошелек успешно удален",
+        text="Кошелек успешно удален 🔪",
         reply_markup=back_to_withdraw_wallets_keyboard()
     )
     await callback.answer()
@@ -235,16 +234,24 @@ async def amount_withdraw_wallet(message: types.Message, state: FSMContext):
 
 
 @router.callback_query(F.data == "approve_withdraw", WithdrawOrder.approve)
-async def approving_withdraw(callback: types.CallbackQuery, state: FSMContext):
+async def approving_withdraw(callback: types.CallbackQuery, session: AsyncSession, state: FSMContext):
     """Approving withdraw transaction"""
     user_data = await state.get_data()
 
-    # TODO: Save to DB
     result = await transfer_usdt(user_data.get('from_wallet').base58_address, user_data.get('to_address'),
                                  user_data.get('amount'), user_data.get('from_wallet').private_key)
 
     status = 'Успешно 🎉' if result['result'] else 'Неуспешно 😬'
     trx_id = result.get('txid') if result.get('txid') else 'Ошибка'
+
+    await add_withdraw_transaction(
+        session=session,
+        user_id=callback.from_user.id,
+        from_address=user_data.get('from_wallet').base58_address,
+        to_address=user_data.get('to_address'),
+        amount=user_data.get('amount'),
+        transaction_id=result.get('txid')
+    )
 
     await callback.message.edit_text(
         text=f"📗<b>Данные о транзакции</b>:\n\n<b>Статус</b>: {status}\n\n<b>Transaction ID</b>:\n{html.pre(trx_id)}",

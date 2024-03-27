@@ -4,6 +4,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from bot.data.callback import DepositWalletCallbackFactory, WithdrawWalletCallbackFactory, \
     DeleteDepositWalletCallbackFactory, DeleteWithdrawWalletCallbackFactory, WithdrawCallbackFactory
+from bot.utils.crypto import compress_address
 
 
 def main_keyboard() -> InlineKeyboardMarkup:
@@ -17,6 +18,18 @@ def main_keyboard() -> InlineKeyboardMarkup:
 
     keyboard = InlineKeyboardBuilder(markup=buttons)
     keyboard.adjust(1, 1, 2)
+
+    return keyboard.as_markup()
+
+
+def back_to_profile_keyboard() -> InlineKeyboardMarkup:
+    """Back to profile keyboard"""
+    buttons = [
+        [InlineKeyboardButton(text="Назад", callback_data="profile")],
+    ]
+
+    keyboard = InlineKeyboardBuilder(markup=buttons)
+    keyboard.adjust(1)
 
     return keyboard.as_markup()
 
@@ -36,6 +49,7 @@ def new_menu_keyboard() -> InlineKeyboardMarkup:
 def profile_keyboard() -> InlineKeyboardMarkup:
     """Profile keyboard"""
     buttons = [
+        [InlineKeyboardButton(text="История операций вывода 📁", callback_data="history_withdraw")],
         [InlineKeyboardButton(text="Мои кошельки 💳", callback_data="wallets")],
         [InlineKeyboardButton(text="Назад", callback_data="menu")],
     ]
@@ -66,9 +80,8 @@ def deposit_wallets_keyboard(wallets) -> InlineKeyboardMarkup:
     buttons = []
 
     for wallet in wallets:
-        # TODO: Add wallet info into button text
         buttons.append([
-            InlineKeyboardButton(text=f"Кошелек ID-{wallet[0].id}",
+            InlineKeyboardButton(text=f"Кошелек ID-{wallet[0].id}: {compress_address(wallet[0].base58_address)} 💳",
                                  callback_data=DepositWalletCallbackFactory(wallet_id=wallet[0].id).pack())
         ])
 
@@ -88,9 +101,8 @@ def withdraw_wallets_keyboard(wallets) -> InlineKeyboardMarkup:
     buttons = []
 
     for wallet in wallets:
-        # TODO: Add wallet info into button text
         buttons.append([
-            InlineKeyboardButton(text=f"Кошелек ID-{wallet[0].id}",
+            InlineKeyboardButton(text=f"Кошелек ID-{wallet[0].id}: {compress_address(wallet[0].base58_address)} 💳",
                                  callback_data=WithdrawWalletCallbackFactory(wallet_id=wallet[0].id).pack())
         ])
 

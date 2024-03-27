@@ -8,9 +8,14 @@ def create_wallet():
     return wallet
 
 
-def check_address(address):
+def check_address(address: str) -> bool:
     """Checks if address valid TRON address"""
     return client.is_address(address)
+
+
+def compress_address(address: str, gap: int = 4) -> str:
+    """Compress address like Tg8A...t0E"""
+    return address[:gap] + "..." + address[-gap:]
 
 
 client = Tron()

@@ -13,7 +13,7 @@ async def add_wallet(
         user_id: int,
         is_deposit: bool,
         wallet
-) -> None:
+):
     """Add a new user deposit wallet to the database"""
     new_wallet = Wallet(
         user_id=user_id,
@@ -27,6 +27,8 @@ async def add_wallet(
 
     session.add(new_wallet)
     await session.commit()
+
+    return new_wallet
 
 
 async def get_user_wallets(
