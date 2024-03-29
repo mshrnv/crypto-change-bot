@@ -9,9 +9,9 @@ from bot.data.callback import TransferToTradingWalletCallbackFactory
 from bot.data.states import WithdrawOrder, TransferToTradingWallet
 
 from bot.keyboards.inline import wallets_keyboard, new_menu_keyboard, approve_transfer_to_trading_wallet_keyboard, \
-    back_to_menu_keyboard
+    back_to_menu_keyboard, trading_history_keyboard, trading_wallet_keyboard
 from bot.services.transfers import add_transfer_transaction
-from bot.services.wallets import get_wallet_info
+from bot.services.wallets import get_wallet_info, get_trading_wallet_balance
 
 router = Router(name="trading")
 
@@ -75,7 +75,7 @@ async def approving_withdraw(callback: types.CallbackQuery, session: AsyncSessio
     )
 
     await callback.message.edit_text(
-        text=f"📗<b>Данные о переводе</b>:\n\n<b>Статус</b>: {status}\n\n<b>Сумма</b>: {user_data.get('amount')} USDT",
+        text=f"📗<b>Данные о переводе на торговый счет</b>:\n\n<b>Статус</b>: {status}\n\n<b>Сумма</b>: {user_data.get('amount')} USDT",
         reply_markup=new_menu_keyboard()
     )
 
@@ -87,9 +87,39 @@ async def approving_withdraw(callback: types.CallbackQuery, session: AsyncSessio
 async def canceling_withdraw(callback: types.CallbackQuery, state: FSMContext):
     """Canceling transfer to trading wallet"""
     await callback.message.answer(
-        text="Перевод отменен ❌",
+        text="Перевод на торговый счет отменен ❌",
         reply_markup=back_to_menu_keyboard()
     )
 
     await state.clear()
+    await callback.answer()
+
+
+@router.callback_query(F.data == "trading_wallet")
+async def trading_wallet_handler(callback: types.CallbackQuery, session: AsyncSession) -> None:
+    """Trading wallet info"""
+    trading_balance = await get_trading_wallet_balance(session, callback.from_user.id)
+    await callback.message.edit_text(
+        text=f"<b>Информация о торговом счете</b> 📈\n\n<b>Баланс</b>: {trading_balance} USDT",
+        reply_markup=trading_wallet_keyboard()
+    )
+    await callback.answer()
+
+
+
+@router.callback_query(F.data == "trading_history")
+async def trading_history_handler(callback: types.CallbackQuery, session: AsyncSession) -> None:
+    """History of trading transactions"""
+    # TODO: Get trading transactions history
+    history = []
+
+    history_text = "Пока не совершено ни одной сделки на торговом счете"
+
+    if history:
+        pass
+
+    await callback.message.edit_text(
+        text=f"<b>Информация о сделках на торговом счете</b> 🗂\n\n{history_text}",
+        reply_markup=trading_history_keyboard()
+    )
     await callback.answer()

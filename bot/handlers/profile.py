@@ -5,6 +5,7 @@ from aiogram import html
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.keyboards.inline import profile_keyboard, back_to_profile_keyboard
+from bot.services.transfers import get_transfer_history
 from bot.services.users import get_user_balances
 from bot.services.withdraws import get_withdraw_history
 
@@ -35,6 +36,26 @@ async def history_withdraw_handler(callback: types.CallbackQuery, session: Async
 
     await callback.message.edit_text(
         text=f"<b>Информация о сделках на торговом счете</b> 🗂\n\n{history_text}",
+        reply_markup=back_to_profile_keyboard()
+    )
+    await callback.answer()
+
+
+@router.callback_query(F.data == "history_transfer_to_trading_wallet")
+async def history_transfer_to_trading_wallet_handler(callback: types.CallbackQuery, session: AsyncSession) -> None:
+    """Transfer to trading wallet history"""
+    history = await get_transfer_history(session, callback.from_user.id)
+
+    history_text = "Пока не совершено ни одного перевода"
+
+    if history:
+        history_text = "\n\n".join(
+            list(map(lambda
+                         item: f"Кошелек-источник: ID-{item[0].from_wallet_id}\nСумма: {item[0].amount}\nДата: {item[0].created_at}",
+                     history)))
+
+    await callback.message.edit_text(
+        text=f"<b>Информация о переводах на торговый счет</b> 🗂\n\n{history_text}",
         reply_markup=back_to_profile_keyboard()
     )
     await callback.answer()

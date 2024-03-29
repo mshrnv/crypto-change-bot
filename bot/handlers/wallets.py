@@ -13,10 +13,9 @@ from bot.data.states import WithdrawOrder
 
 from bot.keyboards.inline import back_to_deposit_wallets_keyboard, \
     deposit_wallets_keyboard, wallets_keyboard, current_deposit_wallet_keyboard, withdraw_wallets_keyboard, \
-    back_to_withdraw_wallets_keyboard, current_withdraw_wallet_keyboard, trading_wallet_keyboard, \
-    trading_history_keyboard, approve_withdraw_keyboard, new_menu_keyboard, back_to_menu_keyboard
-from bot.services.wallets import get_user_wallets, get_wallet_info, delete_wallet, add_wallet, \
-    get_trading_wallet_balance
+    back_to_withdraw_wallets_keyboard, current_withdraw_wallet_keyboard, approve_withdraw_keyboard, new_menu_keyboard, \
+    back_to_menu_keyboard
+from bot.services.wallets import get_user_wallets, get_wallet_info, delete_wallet, add_wallet
 from bot.services.withdraws import add_withdraw_transaction
 from bot.utils.crypto import create_wallet, check_address
 
@@ -141,35 +140,6 @@ async def delete_withdraw_wallet(
     await callback.message.edit_text(
         text="Кошелек успешно удален 🔪",
         reply_markup=back_to_withdraw_wallets_keyboard()
-    )
-    await callback.answer()
-
-
-@router.callback_query(F.data == "trading_wallet")
-async def trading_wallet_handler(callback: types.CallbackQuery, session: AsyncSession) -> None:
-    """Trading wallet info"""
-    trading_balance = await get_trading_wallet_balance(session, callback.from_user.id)
-    await callback.message.edit_text(
-        text=f"<b>Информация о торговом счете</b> 📈\n\n<b>Баланс</b>: {trading_balance} USDT",
-        reply_markup=trading_wallet_keyboard()
-    )
-    await callback.answer()
-
-
-@router.callback_query(F.data == "trading_history")
-async def trading_history_handler(callback: types.CallbackQuery, session: AsyncSession) -> None:
-    """History of trading transactions"""
-    # TODO: Get trading transactions history
-    history = []
-
-    history_text = "Пока не совершено ни одной сделки на торговом счете"
-
-    if history:
-        pass
-
-    await callback.message.edit_text(
-        text=f"<b>Информация о сделках на торговом счете</b> 🗂\n\n{history_text}",
-        reply_markup=trading_history_keyboard()
     )
     await callback.answer()
 

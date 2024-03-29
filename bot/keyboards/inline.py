@@ -62,6 +62,8 @@ def back_to_menu_keyboard() -> InlineKeyboardMarkup:
 def profile_keyboard() -> InlineKeyboardMarkup:
     """Profile keyboard"""
     buttons = [
+        [InlineKeyboardButton(text="История переводов на торговый счет 📊",
+                              callback_data="history_transfer_to_trading_wallet")],
         [InlineKeyboardButton(text="История операций вывода 📁", callback_data="history_withdraw")],
         [InlineKeyboardButton(text="Мои кошельки 💳", callback_data="wallets")],
         [InlineKeyboardButton(text="Назад", callback_data="menu")],
@@ -159,7 +161,8 @@ def current_deposit_wallet_keyboard(wallet_id) -> InlineKeyboardMarkup:
     # TODO: Send to trading wallet
     # TODO: Update balance
     buttons = [
-        [InlineKeyboardButton(text="Перевести на торговый счет 📈", callback_data=TransferToTradingWalletCallbackFactory(wallet_id=wallet_id).pack())],
+        [InlineKeyboardButton(text="Перевести на торговый счет 📈",
+                              callback_data=TransferToTradingWalletCallbackFactory(wallet_id=wallet_id).pack())],
         [InlineKeyboardButton(text="Обновить баланс 🔄", callback_data="update")],
         [InlineKeyboardButton(text="Удалить кошелек 🗑",
                               callback_data=DeleteDepositWalletCallbackFactory(wallet_id=wallet_id).pack())],
