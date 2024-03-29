@@ -3,7 +3,8 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from bot.data.callback import DepositWalletCallbackFactory, WithdrawWalletCallbackFactory, \
-    DeleteDepositWalletCallbackFactory, DeleteWithdrawWalletCallbackFactory, WithdrawCallbackFactory
+    DeleteDepositWalletCallbackFactory, DeleteWithdrawWalletCallbackFactory, WithdrawCallbackFactory, \
+    TransferToTradingWalletCallbackFactory
 from bot.utils.crypto import compress_address
 
 
@@ -38,6 +39,18 @@ def new_menu_keyboard() -> InlineKeyboardMarkup:
     """New menu message keyboard"""
     buttons = [
         [InlineKeyboardButton(text="Меню 📓", callback_data="new_menu")],
+    ]
+
+    keyboard = InlineKeyboardBuilder(markup=buttons)
+    keyboard.adjust(1)
+
+    return keyboard.as_markup()
+
+
+def back_to_menu_keyboard() -> InlineKeyboardMarkup:
+    """Back to menu message keyboard"""
+    buttons = [
+        [InlineKeyboardButton(text="Меню 📓", callback_data="menu")],
     ]
 
     keyboard = InlineKeyboardBuilder(markup=buttons)
@@ -146,7 +159,7 @@ def current_deposit_wallet_keyboard(wallet_id) -> InlineKeyboardMarkup:
     # TODO: Send to trading wallet
     # TODO: Update balance
     buttons = [
-        [InlineKeyboardButton(text="Перевести на торговый счет 📈", callback_data="send_to_trading_wallet")],
+        [InlineKeyboardButton(text="Перевести на торговый счет 📈", callback_data=TransferToTradingWalletCallbackFactory(wallet_id=wallet_id).pack())],
         [InlineKeyboardButton(text="Обновить баланс 🔄", callback_data="update")],
         [InlineKeyboardButton(text="Удалить кошелек 🗑",
                               callback_data=DeleteDepositWalletCallbackFactory(wallet_id=wallet_id).pack())],
@@ -211,6 +224,32 @@ def approve_withdraw_keyboard() -> InlineKeyboardMarkup:
 
     keyboard = InlineKeyboardBuilder(markup=buttons)
     keyboard.adjust(2)
+
+    return keyboard.as_markup()
+
+
+def approve_transfer_to_trading_wallet_keyboard() -> InlineKeyboardMarkup:
+    """Approve transfer to trading wallet keyboard"""
+    buttons = [
+        [InlineKeyboardButton(text="Подтверждаю ✅", callback_data="approve_transfer_to_trading_wallet")],
+        [InlineKeyboardButton(text="Отмена ❌", callback_data="cancel_transfer_to_trading_wallet")],
+    ]
+
+    keyboard = InlineKeyboardBuilder(markup=buttons)
+    keyboard.adjust(2)
+
+    return keyboard.as_markup()
+
+
+def support_keyboard() -> InlineKeyboardMarkup:
+    """Support menu keyboard"""
+    buttons = [
+        [InlineKeyboardButton(text="Написать в поддержку 📝", callback_data="write_to_support")],
+        [InlineKeyboardButton(text="Назад", callback_data="menu")],
+    ]
+
+    keyboard = InlineKeyboardBuilder(markup=buttons)
+    keyboard.adjust(1, 1)
 
     return keyboard.as_markup()
 

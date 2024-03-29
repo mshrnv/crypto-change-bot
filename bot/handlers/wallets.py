@@ -14,7 +14,7 @@ from bot.data.states import WithdrawOrder
 from bot.keyboards.inline import back_to_deposit_wallets_keyboard, \
     deposit_wallets_keyboard, wallets_keyboard, current_deposit_wallet_keyboard, withdraw_wallets_keyboard, \
     back_to_withdraw_wallets_keyboard, current_withdraw_wallet_keyboard, trading_wallet_keyboard, \
-    trading_history_keyboard, approve_withdraw_keyboard, new_menu_keyboard
+    trading_history_keyboard, approve_withdraw_keyboard, new_menu_keyboard, back_to_menu_keyboard
 from bot.services.wallets import get_user_wallets, get_wallet_info, delete_wallet, add_wallet, \
     get_trading_wallet_balance
 from bot.services.withdraws import add_withdraw_transaction
@@ -267,7 +267,7 @@ async def canceling_withdraw(callback: types.CallbackQuery, state: FSMContext):
     """Canceling withdraw transaction"""
     await callback.message.answer(
         text="Транзакция отменена ❌",
-        reply_markup=new_menu_keyboard()
+        reply_markup=back_to_menu_keyboard()
     )
     await state.clear()
     await callback.answer()

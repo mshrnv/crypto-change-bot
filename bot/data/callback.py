@@ -25,3 +25,8 @@ class DeleteWithdrawWalletCallbackFactory(CallbackData, prefix="delete_wthdrw_wa
 class WithdrawCallbackFactory(CallbackData, prefix="wthdrw"):
     """Withdraw callback factory"""
     wallet_id: int
+
+
+class TransferToTradingWalletCallbackFactory(CallbackData, prefix="trnsfr_to_trdng"):
+    """Transfer to trading wallet callback factory"""
+    wallet_id: int

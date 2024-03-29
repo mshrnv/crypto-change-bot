@@ -14,7 +14,7 @@ async def add_withdraw_transaction(
         to_address: str,
         amount: float,
         transaction_id: str
-) -> None:
+):
     """Add a new withdraw-transaction to the database"""
 
     new_withdraw = Withdraw(
