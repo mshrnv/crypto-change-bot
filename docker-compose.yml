@@ -1,16 +1,18 @@
 version: "3.11"
 
 services:
-#  redis:
-#    image: redis:7-alpine
-#    restart: always
-#    env_file: .env
-#    ports:
-#      - "${REDIS_PORT}:${REDIS_PORT}"
-#    expose:
-#      - "${REDIS_PORT}"
-#    volumes:
-#      - redis-data:${REDIS_DATA}
+  redis:
+    image: redis:7-alpine
+    restart: always
+    env_file: .env
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    expose:
+      - "${REDIS_PORT}"
+    volumes:
+      - redis-data:${REDIS_DATA}
+    networks:
+      - common
 
   postgres:
     image: postgres:16-alpine
@@ -25,6 +27,21 @@ services:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     expose:
       - "${POSTGRES_PORT}"
+    networks:
+      - common
+
+  parser:
+    image: parser
+    restart: always
+    build:
+      context: parser
+      dockerfile: Dockerfile.parser
+    depends_on:
+      - redis
+    env_file: .env
+    networks:
+      - common
+
   # bot:
   #   build: .
   #   restart: always
@@ -33,5 +50,9 @@ services:
   #     - redis
   #     - postgres
 
-#volumes:
-#  redis-data:
+volumes:
+  redis-data:
+
+networks:
+  common:
+    driver: bridge

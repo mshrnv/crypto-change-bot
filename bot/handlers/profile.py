@@ -1,6 +1,6 @@
 """Profile handlers"""
-from aiogram import Router, types
 from aiogram import F
+from aiogram import Router, types
 from aiogram import html
 from sqlalchemy.ext.asyncio import AsyncSession
 
