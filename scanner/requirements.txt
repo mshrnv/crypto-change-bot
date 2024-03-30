@@ -1,0 +1,7 @@
+redis==4.5.5
+httpx~=0.24.1
+networkx~=3.0
+matplotlib~=3.6.0
+pymongo~=4.3.3
+python-dotenv~=1.0.0
+httpx[http2]==0.24.1

@@ -7,6 +7,9 @@ from mexc import MexcClient
 from parser.src.config import REDIS_HOST, REDIS_PORT, REDIS_DB, MEXC_ACCESS_KEY, MEXC_SECRET_KEY
 from parser.src.utils import get_timestamp
 
+PERIOD_TIME = 5
+TIMEOUT = 10
+
 if __name__ == "__main__":
     # Connection with Redis
     client = redis.Redis(
@@ -24,10 +27,9 @@ if __name__ == "__main__":
     # Every 3sec updating redis with new tickers
     while True:
         tickers = mexc.get_data()
-        print(tickers)
 
         if not tickers:
-            time.sleep(10)
+            time.sleep(TIMEOUT)
             continue
 
         timestamp = get_timestamp()
@@ -42,4 +44,4 @@ if __name__ == "__main__":
                 'bid_size': data['bid_size'],
             })
 
-        time.sleep(3)
+        time.sleep(PERIOD_TIME)
