@@ -2,7 +2,6 @@
 
 AMOUNT = 10
 
-
 chains = [
     # ['USDC', 'ETH', 'BTC', 'USDC'],
     ['USDC', 'BTC', 'ETH', 'USDC'],

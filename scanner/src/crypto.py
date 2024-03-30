@@ -88,9 +88,9 @@ def calc_all_chains_spread(
 
         spread = round(calc_chain_spread(chain_path), 4)
 
-        redis_client.hset(chain, mapping={
+        redis_client.hset("-".join(chain), mapping={
             'spread': spread,
-            'timestamp': get_timestamp(),
+            'timestamp': str(get_timestamp()),
             'orders': json.dumps(orders)
         })
 

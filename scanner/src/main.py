@@ -3,7 +3,7 @@ import time
 
 import redis
 
-from scanner.src.config import REDIS_HOST, REDIS_PORT, REDIS_DB, MEXC_ACCESS_KEY, MEXC_SECRET_KEY
+from scanner.src.config import REDIS_HOST, REDIS_PORT, REDIS_DB
 from scanner.src.consts import chains
 from scanner.src.crypto import get_redis_data, prepare_currencies_data, calc_all_chains_spread
 from scanner.src.utils import get_timestamp

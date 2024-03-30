@@ -42,6 +42,19 @@ services:
     networks:
       - common
 
+  scanner:
+    image: scanner
+    restart: always
+    build:
+      context: scanner
+      dockerfile: Dockerfile
+    depends_on:
+      - redis
+      - parser
+    env_file: .env
+    networks:
+      - common
+
   # bot:
   #   build: .
   #   restart: always

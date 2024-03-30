@@ -74,6 +74,7 @@ class MexcClient:
     def get_tickers(self) -> dict | None:
         """Returns all tickers list"""
         try:
+            # TODO: endpoint
             url = "https://api.mexc.com/api/v3/ticker/bookTicker"
             response = self.client.get(url, headers=self.headers)
             return response.json()
