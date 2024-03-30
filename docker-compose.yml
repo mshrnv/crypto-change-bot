@@ -35,7 +35,7 @@ services:
     restart: always
     build:
       context: parser
-      dockerfile: parser/Dockerfile
+      dockerfile: Dockerfile
     depends_on:
       - redis
     env_file: .env
