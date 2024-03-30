@@ -3,10 +3,10 @@ import hashlib
 import hmac
 
 import httpx
-from src.endpoints import NEW_ORDER_ENDPOINT
-from src.utils import get_mexc_timestamp
 
 from consts import needle
+from parser.src.endpoints import NEW_ORDER_ENDPOINT
+from parser.src.utils import get_mexc_timestamp
 
 
 class MexcClient:

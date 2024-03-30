@@ -1,6 +1,6 @@
 """Additional utils"""
-from datetime import datetime
 import time
+from datetime import datetime
 
 
 def get_mexc_timestamp() -> int:

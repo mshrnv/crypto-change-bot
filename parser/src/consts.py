@@ -21,7 +21,7 @@ needle = [
 ]
 
 currencies = [
-    'BTC', 'USDC', 'ETH', 'SOL', 'XRP', 'ELF', 'MX', 'USDC'
+    'BTC', 'USDC', 'ETH', 'SOL', 'XRP', 'ELF', 'MX'
 ]
 
 chains = [

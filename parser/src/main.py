@@ -1,8 +1,9 @@
 """Live parsing module of OKX market"""
 import time
-import redis
-from mexc import MexcClient
 
+import redis
+
+from mexc import MexcClient
 from parser.src.config import REDIS_HOST, REDIS_PORT, REDIS_DB, MEXC_ACCESS_KEY, MEXC_SECRET_KEY
 from parser.src.utils import get_timestamp
 
