@@ -3,6 +3,7 @@ version: "3.11"
 services:
   redis:
     image: redis:7-alpine
+    container_name: crypto-change-bot-redis
     restart: always
     env_file: .env
     ports:
@@ -16,6 +17,7 @@ services:
 
   postgres:
     image: postgres:16-alpine
+    container_name: crypto-change-bot-postgres
     restart: always
     env_file: .env
     environment:
@@ -32,6 +34,7 @@ services:
 
   parser:
     image: parser
+    container_name: crypto-change-bot-parser
     restart: always
     build:
       context: parser
@@ -44,6 +47,7 @@ services:
 
   scanner:
     image: scanner
+    container_name: crypto-change-bot-scanner
     restart: always
     build:
       context: scanner

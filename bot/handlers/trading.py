@@ -5,11 +5,12 @@ from aiogram import html
 from aiogram.fsm.context import FSMContext
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from bot.api.crypto import get_spreads
 from bot.data.callback import TransferToTradingWalletCallbackFactory
 from bot.data.states import WithdrawOrder, TransferToTradingWallet
 
 from bot.keyboards.inline import wallets_keyboard, new_menu_keyboard, approve_transfer_to_trading_wallet_keyboard, \
-    back_to_menu_keyboard, trading_history_keyboard, trading_wallet_keyboard
+    back_to_menu_keyboard, trading_history_keyboard, trading_wallet_keyboard, trade_operations_keyboard
 from bot.services.transfers import add_transfer_transaction
 from bot.services.wallets import get_wallet_info, get_trading_wallet_balance
 
@@ -121,5 +122,19 @@ async def trading_history_handler(callback: types.CallbackQuery, session: AsyncS
     await callback.message.edit_text(
         text=f"<b>Информация о сделках на торговом счете</b> 🗂\n\n{history_text}",
         reply_markup=trading_history_keyboard()
+    )
+    await callback.answer()
+
+
+
+@router.callback_query(F.data == "trade_operations")
+async def trade_operations_handler(callback: types.CallbackQuery, session: AsyncSession) -> None:
+    """List of trading operations"""
+
+    spreads_data = get_spreads()
+
+    await callback.message.edit_text(
+        text=f"<b>Список доступных связок</b> 📖",
+        reply_markup=trade_operations_keyboard(spreads_data)
     )
     await callback.answer()

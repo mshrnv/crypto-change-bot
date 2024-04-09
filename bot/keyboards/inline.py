@@ -13,12 +13,13 @@ def main_keyboard() -> InlineKeyboardMarkup:
     buttons = [
         [InlineKeyboardButton(text="Профиль 👤", callback_data="profile")],
         [InlineKeyboardButton(text="Мои кошельки 💳", callback_data="wallets")],
+        [InlineKeyboardButton(text="Торговые операции 📈", callback_data="trade_operations")],
         [InlineKeyboardButton(text="Настройки ⚙️", callback_data="settings")],
         [InlineKeyboardButton(text="Помощь ✉️", callback_data="support")],
     ]
 
     keyboard = InlineKeyboardBuilder(markup=buttons)
-    keyboard.adjust(1, 1, 2)
+    keyboard.adjust(1, 1, 1, 2)
 
     return keyboard.as_markup()
 
@@ -240,6 +241,27 @@ def approve_transfer_to_trading_wallet_keyboard() -> InlineKeyboardMarkup:
 
     keyboard = InlineKeyboardBuilder(markup=buttons)
     keyboard.adjust(2)
+
+    return keyboard.as_markup()
+
+
+def trade_operations_keyboard(spreads: dict) -> InlineKeyboardMarkup:
+    """Trade operations list keyboards"""
+    buttons = []
+
+    # TODO: Callback data -> callback factory
+    for spread, spread_info in spreads.items():
+        buttons.append([
+            InlineKeyboardButton(text=f"🔗{spread}",
+                                 callback_data="TODO")
+        ])
+
+    buttons.extend([
+        [InlineKeyboardButton(text="Назад", callback_data="menu")],
+    ])
+
+    keyboard = InlineKeyboardBuilder(markup=buttons)
+    keyboard.adjust(1)
 
     return keyboard.as_markup()
 
