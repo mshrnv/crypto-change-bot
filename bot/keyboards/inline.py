@@ -4,7 +4,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from bot.data.callback import DepositWalletCallbackFactory, WithdrawWalletCallbackFactory, \
     DeleteDepositWalletCallbackFactory, DeleteWithdrawWalletCallbackFactory, WithdrawCallbackFactory, \
-    TransferToTradingWalletCallbackFactory
+    TransferToTradingWalletCallbackFactory, SpreadChainCallbackFactory
 from bot.utils.crypto import compress_address
 
 
@@ -249,11 +249,10 @@ def trade_operations_keyboard(spreads: dict) -> InlineKeyboardMarkup:
     """Trade operations list keyboards"""
     buttons = []
 
-    # TODO: Callback data -> callback factory
-    for spread, spread_info in spreads.items():
+    for chain, spread_info in spreads.items():
         buttons.append([
-            InlineKeyboardButton(text=f"🔗{spread}",
-                                 callback_data="TODO")
+            InlineKeyboardButton(text=f"🔗{chain}",
+                                 callback_data=SpreadChainCallbackFactory(chain=chain).pack())
         ])
 
     buttons.extend([
@@ -262,6 +261,21 @@ def trade_operations_keyboard(spreads: dict) -> InlineKeyboardMarkup:
 
     keyboard = InlineKeyboardBuilder(markup=buttons)
     keyboard.adjust(1)
+
+    return keyboard.as_markup()
+
+
+def chain_info_keyboard() -> InlineKeyboardMarkup:
+    """Chain info keyboard"""
+
+    # TODO: Make approve button handler
+    buttons = [
+        [InlineKeyboardButton(text="Совершить сделку 🚀", callback_data="trade_this_chain")],
+        [InlineKeyboardButton(text="Назад", callback_data="trade_operations")],
+    ]
+
+    keyboard = InlineKeyboardBuilder(markup=buttons)
+    keyboard.adjust(1, 1)
 
     return keyboard.as_markup()
 

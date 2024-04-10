@@ -30,3 +30,8 @@ class WithdrawCallbackFactory(CallbackData, prefix="wthdrw"):
 class TransferToTradingWalletCallbackFactory(CallbackData, prefix="trnsfr_to_trdng"):
     """Transfer to trading wallet callback factory"""
     wallet_id: int
+
+
+class SpreadChainCallbackFactory(CallbackData, prefix="sprd_chn"):
+    """Spread chain callback factory"""
+    chain: str

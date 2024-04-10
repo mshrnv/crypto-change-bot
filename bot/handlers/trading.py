@@ -1,16 +1,16 @@
 """Trading operations handlers"""
-from aiogram import Router, types
 from aiogram import F
+from aiogram import Router, types
 from aiogram import html
 from aiogram.fsm.context import FSMContext
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.api.crypto import get_spreads
-from bot.data.callback import TransferToTradingWalletCallbackFactory
-from bot.data.states import WithdrawOrder, TransferToTradingWallet
-
-from bot.keyboards.inline import wallets_keyboard, new_menu_keyboard, approve_transfer_to_trading_wallet_keyboard, \
-    back_to_menu_keyboard, trading_history_keyboard, trading_wallet_keyboard, trade_operations_keyboard
+from bot.data.callback import TransferToTradingWalletCallbackFactory, SpreadChainCallbackFactory
+from bot.data.states import TransferToTradingWallet
+from bot.keyboards.inline import new_menu_keyboard, approve_transfer_to_trading_wallet_keyboard, \
+    back_to_menu_keyboard, trading_history_keyboard, trading_wallet_keyboard, trade_operations_keyboard, \
+    chain_info_keyboard
 from bot.services.transfers import add_transfer_transaction
 from bot.services.wallets import get_wallet_info, get_trading_wallet_balance
 
@@ -107,7 +107,6 @@ async def trading_wallet_handler(callback: types.CallbackQuery, session: AsyncSe
     await callback.answer()
 
 
-
 @router.callback_query(F.data == "trading_history")
 async def trading_history_handler(callback: types.CallbackQuery, session: AsyncSession) -> None:
     """History of trading transactions"""
@@ -126,7 +125,6 @@ async def trading_history_handler(callback: types.CallbackQuery, session: AsyncS
     await callback.answer()
 
 
-
 @router.callback_query(F.data == "trade_operations")
 async def trade_operations_handler(callback: types.CallbackQuery, session: AsyncSession) -> None:
     """List of trading operations"""
@@ -136,5 +134,22 @@ async def trade_operations_handler(callback: types.CallbackQuery, session: Async
     await callback.message.edit_text(
         text=f"<b>Список доступных связок</b> 📖",
         reply_markup=trade_operations_keyboard(spreads_data)
+    )
+    await callback.answer()
+
+
+@router.callback_query(SpreadChainCallbackFactory.filter())
+async def deposit_wallet_info(
+        callback: types.CallbackQuery,
+        callback_data: SpreadChainCallbackFactory,
+        session: AsyncSession
+):
+    """Spread chain info"""
+
+    spread_info = get_spreads()[callback_data.chain]
+
+    await callback.message.edit_text(
+        text=f"<b>🧩Информация о связке:</b>\n\nСвязка: {callback_data.chain}\nСпред: {spread_info['spread']}%",
+        reply_markup=chain_info_keyboard()
     )
     await callback.answer()
