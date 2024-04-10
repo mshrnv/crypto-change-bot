@@ -59,13 +59,16 @@ services:
     networks:
       - common
 
-  # bot:
-  #   build: .
-  #   restart: always
-  #   env_file: .env
-  #   depends_on:
-  #     - redis
-  #     - postgres
+  bot:
+    build: ./bot
+    container_name: crypto-change-bot-bot
+    restart: always
+    env_file: .env
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - common
 
 volumes:
   redis-data:

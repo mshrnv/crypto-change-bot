@@ -6,3 +6,4 @@ SQLAlchemy~=2.0.28
 redis~=4.5.5
 tronpy~=0.4.0
 aiohttp~=3.9.3
+pydantic_settings
